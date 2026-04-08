@@ -14,6 +14,10 @@ jobs:
     steps:
       - name: Git Checkout
         uses: actions/checkout@v6
+      - name: Apt Update
+        run: apt update
+      - name: Install Dependencies
+        run: apt install -y dos2unix
       - name: Clobber
         run: make -C auto clobber
       - name: Generate Extensions
@@ -34,7 +38,7 @@ jobs:
         with:
           name: distributable-source-archives
           path: |
-            /tmp/glew.XXXXXX/**
+            /tmp/glew.*/**
   compile-clang:
     name: Ubuntu Linux clang Build
     needs:
