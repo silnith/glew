@@ -40,7 +40,6 @@ jobs:
     needs:
       - generate-source
     runs-on: ubuntu-latest
-    strategy:
     steps:
       - name: Git Checkout
         uses: actions/checkout@v6
