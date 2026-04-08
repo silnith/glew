@@ -65,6 +65,13 @@ jobs:
         env:
           SYSTEM: ${{ matrix.system }}
         run: make
+      - name: Upload Binaries
+        uses: actions/upload-artifact@v7
+        with:
+          name: binaries-${{ matrix.system }}
+          path: |
+            bin/
+            lib/
   compile-cmake:
     name: Ubuntu Linux CMake Build
     needs:
@@ -124,6 +131,13 @@ jobs:
         env:
           SYSTEM: ${{ matrix.system }}
         run: make
+      - name: Upload Binaries
+        uses: actions/upload-artifact@v7
+        with:
+          name: binaries-${{ matrix.system }}
+          path: |
+            bin/
+            lib/
   compile-win:
     name: Ubuntu Linux GCC Cross-Build
     needs:
@@ -149,3 +163,10 @@ jobs:
         env:
           SYSTEM: ${{ matrix.system }}
         run: make
+      - name: Upload Binaries
+        uses: actions/upload-artifact@v7
+        with:
+          name: binaries-${{ matrix.system }}
+          path: |
+            bin/
+            lib/
