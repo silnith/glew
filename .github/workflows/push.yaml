@@ -118,8 +118,9 @@ jobs:
           -DGLEW_X11=${{ case(matrix.egl, 'N', 'Y') }}
           -DGLEW_EGL=${{ case(matrix.egl, 'Y', 'N') }}
           -DBUILD_SHARED_LIBS=${{ case(matrix.shared-lib, 'Y', 'N') }}
+           --verbose
       - name: CMake Build
-        run: cmake --build build_
+        run: cmake --build build_ --verbose
       - name: Clean Up
         run: rm -Rf build_
       - name: Upload Binaries
