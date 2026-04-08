@@ -40,39 +40,39 @@ jobs:
           path: |
             glew-*.zip
             glew-*.tgz
-#  compile-clang:
-#    name: Ubuntu Linux clang Build
-#    needs:
-#      - generate-source
-#    runs-on: ubuntu-latest
-#    strategy:
-#      fail-fast: false
-#      matrix:
-#        system:
-#          - linux-clang
-#          - linux-clang-egl
-#    steps:
-#      - name: Git Checkout
-#        uses: actions/checkout@v6
-#      - name: Download Generated Source Code
-#        uses: actions/download-artifact@v8
-#        with:
-#          name: generated-source
-#      - name: Install Dependencies
-#        run: sudo apt install -y clang libxmu-dev libxi-dev libgl-dev libegl1-mesa-dev dos2unix
-#      - name: Clean
-#        run: make clean
-#      - name: Build Binaries
-#        env:
-#          SYSTEM: ${{ matrix.system }}
-#        run: make
-#      - name: Upload Binaries
-#        uses: actions/upload-artifact@v7
-#        with:
-#          name: binaries-${{ matrix.system }}
-#          path: |
-#            bin/
-#            lib/
+  compile-clang:
+    name: Ubuntu Linux clang Build
+    needs:
+      - generate-source
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        system:
+          - linux-clang
+          - linux-clang-egl
+    steps:
+      - name: Git Checkout
+        uses: actions/checkout@v6
+      - name: Download Generated Source Code
+        uses: actions/download-artifact@v8
+        with:
+          name: generated-source
+      - name: Install Dependencies
+        run: sudo apt install -y clang libxmu-dev libxi-dev libgl-dev libegl1-mesa-dev dos2unix
+      - name: Clean
+        run: make clean
+      - name: Build Binaries
+        env:
+          SYSTEM: ${{ matrix.system }}
+        run: make
+      - name: Upload Binaries
+        uses: actions/upload-artifact@v7
+        with:
+          name: binaries-${{ matrix.system }}
+          path: |
+            bin/
+            lib/
   compile-cmake:
     name: Ubuntu Linux CMake Build
     needs:
@@ -118,69 +118,69 @@ jobs:
         run: cmake --build build_
       - name: Clean Up
         run: rm -Rf build_
-#  compile-gcc:
-#    name: Ubuntu Linux GCC Build
-#    needs:
-#      - generate-source
-#    runs-on: ubuntu-latest
-#    strategy:
-#      fail-fast: false
-#      matrix:
-#        system:
-#          - linux
-#          - linux-egl
-#    steps:
-#      - name: Git Checkout
-#        uses: actions/checkout@v6
-#      - name: Download Generated Source Code
-#        uses: actions/download-artifact@v8
-#        with:
-#          name: generated-source
-#      - name: Install Dependencies
-#        run: sudo apt install -y libxmu-dev libxi-dev libgl-dev libegl1-mesa-dev dos2unix
-#      - name: Clean
-#        run: make clean
-#      - name: Build Binaries
-#        env:
-#          SYSTEM: ${{ matrix.system }}
-#        run: make
-#      - name: Upload Binaries
-#        uses: actions/upload-artifact@v7
-#        with:
-#          name: binaries-${{ matrix.system }}
-#          path: |
-#            bin/
-#            lib/
-#  compile-win:
-#    name: Ubuntu Linux GCC Cross-Build
-#    needs:
-#      - generate-source
-#    runs-on: ubuntu-latest
-#    strategy:
-#      fail-fast: false
-#      matrix:
-#        system:
-#          - linux-mingw32
-#          - linux-mingw64
-#    steps:
-#      - name: Git Checkout
-#        uses: actions/checkout@v6
-#      - name: Download Generated Source Code
-#        uses: actions/download-artifact@v8
-#        with:
-#          name: generated-source
-#      - name: Install Dependencies
-#        run: sudo apt install -y mingw-w64 dos2unix
-#      - name: Clean
-#        run: make clean
-#      - name: Build Binaries
-#        env:
-#          SYSTEM: ${{ matrix.system }}
-#        run: make
-#      - name: Upload Binaries
-#        uses: actions/upload-artifact@v7
-#        with:
-#          name: binaries-${{ matrix.system }}
-#          path: |
-#            bin/
-#            lib/
+  compile-gcc:
+    name: Ubuntu Linux GCC Build
+    needs:
+      - generate-source
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        system:
+          - linux
+          - linux-egl
+    steps:
+      - name: Git Checkout
+        uses: actions/checkout@v6
+      - name: Download Generated Source Code
+        uses: actions/download-artifact@v8
+        with:
+          name: generated-source
+      - name: Install Dependencies
+        run: sudo apt install -y libxmu-dev libxi-dev libgl-dev libegl1-mesa-dev dos2unix
+      - name: Clean
+        run: make clean
+      - name: Build Binaries
+        env:
+          SYSTEM: ${{ matrix.system }}
+        run: make
+      - name: Upload Binaries
+        uses: actions/upload-artifact@v7
+        with:
+          name: binaries-${{ matrix.system }}
+          path: |
+            bin/
+            lib/
+  compile-win:
+    name: Ubuntu Linux GCC Cross-Build
+    needs:
+      - generate-source
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        system:
+          - linux-mingw32
+          - linux-mingw64
+    steps:
+      - name: Git Checkout
+        uses: actions/checkout@v6
+      - name: Download Generated Source Code
+        uses: actions/download-artifact@v8
+        with:
+          name: generated-source
+      - name: Install Dependencies
+        run: sudo apt install -y mingw-w64 dos2unix
+      - name: Clean
+        run: make clean
+      - name: Build Binaries
+        env:
+          SYSTEM: ${{ matrix.system }}
+        run: make
+      - name: Upload Binaries
+        uses: actions/upload-artifact@v7
+        with:
+          name: binaries-${{ matrix.system }}
+          path: |
+            bin/
+            lib/
