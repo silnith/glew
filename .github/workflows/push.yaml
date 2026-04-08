@@ -46,6 +46,7 @@ jobs:
       - generate-source
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         system:
           - linux-clang
@@ -78,16 +79,17 @@ jobs:
       - generate-source
     runs-on: ubuntu-linux
     strategy:
+      fail-fast: false
       matrix:
         build-type:
           - Debug
           - Release
         shared-lib:
-          - N
-          - Y
+          - false
+          - true
         egl:
-          - N
-          - Y
+          - false
+          - true
     steps:
       - name: Git Checkout
         uses: actions/checkout@v6
@@ -100,18 +102,29 @@ jobs:
       # Look into this:
       # https://github.com/threeal/cmake-action
       # https://github.com/threeal/ctest-action
-      - name: Build Binaries
-        run: |
-          mkdir build_
-          cmake build/cmake -B build_ -G Ninja --fresh -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} -DGLEW_X11=N -DGLEW_EGL=Y -DBUILD_SHARED_LIBS=${{ matrix.shared-lib }}
-          cmake --build build_
-          rm -Rf build_
+      - name: Make Build Directory
+        run: mkdir build_
+      - name: CMake
+        run: >-
+          cmake build/cmake
+          -B build_
+          -G Ninja
+          --fresh
+          -DCMAKE_BUILD_TYPE=${{ matrix.build-type }}
+          -DGLEW_X11=${{ case(matrix.egl, 'N', 'Y') }}
+          -DGLEW_EGL=${{ case(matrix.egl, 'Y', 'N') }}
+          -DBUILD_SHARED_LIBS=${{ case(matrix.shared-lib, 'Y', 'N') }}
+      - name: CMake Build
+        run: cmake --build build_
+      - name: Clean Up
+        run: rm -Rf build_
   compile-gcc:
     name: Ubuntu Linux GCC Build
     needs:
       - generate-source
     runs-on: ubuntu-linux
     strategy:
+      fail-fast: false
       matrix:
         system:
           - linux
@@ -144,6 +157,7 @@ jobs:
       - generate-source
     runs-on: ubuntu-linux
     strategy:
+      fail-fast: false
       matrix:
         system:
           - linux-mingw32
