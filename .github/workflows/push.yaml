@@ -14,8 +14,6 @@ jobs:
     steps:
       - name: Git Checkout
         uses: actions/checkout@v6
-      - name: Apt Update
-        run: apt update
       - name: Install Dependencies
         run: apt install -y dos2unix
       - name: Clobber
@@ -51,8 +49,6 @@ jobs:
         uses: actions/download-artifact@v8
         with:
           name: generated-source
-      - name: Apt Update
-        run: apt update
       - name: Install Dependencies
         run: apt install -y clang libxmu-dev libxi-dev libgl-dev libegl1-mesa-dev dos2unix
       - name: Build Binaries
@@ -82,8 +78,6 @@ jobs:
         uses: actions/download-artifact@v8
         with:
           name: generated-source
-      - name: Apt Update
-        run: apt update
       - name: Install Dependencies
         run: apt install -y cmake ninja-build libxmu-dev libxi-dev libgl-dev libegl1-mesa-dev dos2unix
       - name: Build Binaries
@@ -104,8 +98,6 @@ jobs:
         uses: actions/download-artifact@v8
         with:
           name: generated-source
-      - name: Apt Update
-        run: apt update
       - name: Install Dependencies
         run: apt install -y libxmu-dev libxi-dev libgl-dev libegl1-mesa-dev dos2unix
       - name: Build Binaries
@@ -124,8 +116,6 @@ jobs:
         uses: actions/download-artifact@v8
         with:
           name: generated-source
-      - name: Apt Update
-        run: apt update
       - name: Install Dependencies
         run: apt install -y mingw-w64 dos2unix
       - name: Build Binaries
