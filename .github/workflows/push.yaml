@@ -38,7 +38,8 @@ jobs:
         with:
           name: distributable-source-archives
           path: |
-            /tmp/glew.*/**
+            glew-*.zip
+            glew-*.tgz
   compile-clang:
     name: Ubuntu Linux clang Build
     needs:
