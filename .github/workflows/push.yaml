@@ -77,7 +77,7 @@ jobs:
     name: Ubuntu Linux CMake Build
     needs:
       - generate-source
-    runs-on: ubuntu-linux
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
@@ -122,7 +122,7 @@ jobs:
 #    name: Ubuntu Linux GCC Build
 #    needs:
 #      - generate-source
-#    runs-on: ubuntu-linux
+#    runs-on: ubuntu-latest
 #    strategy:
 #      fail-fast: false
 #      matrix:
@@ -155,7 +155,7 @@ jobs:
 #    name: Ubuntu Linux GCC Cross-Build
 #    needs:
 #      - generate-source
-#    runs-on: ubuntu-linux
+#    runs-on: ubuntu-latest
 #    strategy:
 #      fail-fast: false
 #      matrix:
