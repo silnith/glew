@@ -119,7 +119,7 @@ jobs:
           -DGLEW_EGL=${{ case(matrix.egl, 'Y', 'N') }}
           -DBUILD_SHARED_LIBS=${{ case(matrix.shared-lib, 'Y', 'N') }}
       - name: CMake Build
-        run: cmake --build build_ --verbose
+        run: cmake --build build_
       - name: Make Install Directory
         run: mkdir install
       - name: CMake Install
@@ -128,6 +128,4 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: binaries-${{ matrix.build-type }}-${{ case(matrix.egl, 'egl', 'x11') }}-${{ case(matrix.shared-lib, 'shared', 'static') }}
-          path: |
-            install/bin/
-            install/lib/
+          path: install/*
