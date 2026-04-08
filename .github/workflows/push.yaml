@@ -14,8 +14,6 @@ jobs:
     steps:
       - name: Git Checkout
         uses: actions/checkout@v6
-      - name: Install Dependencies
-        run: apt install -y dos2unix
       - name: Clobber
         run: make -C auto clobber
       - name: Generate Extensions
@@ -29,6 +27,10 @@ jobs:
             src
             doc
             build
+      # Look into this:
+      # https://github.com/marketplace/actions/cache-apt-packages
+      - name: Install Dependencies
+        run: sudo apt install -y dos2unix
       - name: Generate Distributable Source
         run: make dist-src
       - name: Upload Distributable Source
@@ -50,7 +52,7 @@ jobs:
         with:
           name: generated-source
       - name: Install Dependencies
-        run: apt install -y clang libxmu-dev libxi-dev libgl-dev libegl1-mesa-dev dos2unix
+        run: sudo apt install -y clang libxmu-dev libxi-dev libgl-dev libegl1-mesa-dev dos2unix
       - name: Build Binaries
         run: |
           make clean && SYSTEM=linux-clang     make
@@ -79,7 +81,7 @@ jobs:
         with:
           name: generated-source
       - name: Install Dependencies
-        run: apt install -y cmake ninja-build libxmu-dev libxi-dev libgl-dev libegl1-mesa-dev dos2unix
+        run: sudo apt install -y cmake ninja-build libxmu-dev libxi-dev libgl-dev libegl1-mesa-dev dos2unix
       - name: Build Binaries
         run: |
           mkdir build_
@@ -99,7 +101,7 @@ jobs:
         with:
           name: generated-source
       - name: Install Dependencies
-        run: apt install -y libxmu-dev libxi-dev libgl-dev libegl1-mesa-dev dos2unix
+        run: sudo apt install -y libxmu-dev libxi-dev libgl-dev libegl1-mesa-dev dos2unix
       - name: Build Binaries
         run: |
           make clean && SYSTEM=linux     make
@@ -117,7 +119,7 @@ jobs:
         with:
           name: generated-source
       - name: Install Dependencies
-        run: apt install -y mingw-w64 dos2unix
+        run: sudo apt install -y mingw-w64 dos2unix
       - name: Build Binaries
         run: |
           make clean && SYSTEM=linux-mingw32 make
