@@ -1,0 +1,131 @@
+# yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
+
+name: On Push
+
+on:
+  push:
+    branches:
+      - '*'
+
+jobs:
+  generate-source:
+    name: Generate Source Code
+    runs-on: ubuntu-latest
+    steps:
+      - name: Git Checkout
+        uses: actions/checkout@v6
+      - name: Clobber
+        run: make -C auto clobber
+      - name: Generate Extensions
+        run: make -C auto
+      - name: Upload Generated Source Code
+        uses: actions/upload-artifact@v7
+        with:
+          name: generated-source
+          path: |
+            include/GL
+            src
+            doc
+            build
+      - name: Generate Distributable Source
+        run: make dist-src
+      - name: Upload Distributable Source
+        uses: actions/upload-artifact@v7
+        with:
+          name: distributable-source-archives
+          path: |
+            /tmp/glew.XXXXXX/**
+  compile-clang:
+    name: Ubuntu Linux clang Build
+    needs:
+      - generate-source
+    runs-on: ubuntu-latest
+    strategy:
+    steps:
+      - name: Git Checkout
+        uses: actions/checkout@v6
+      - name: Download Generated Source Code
+        uses: actions/download-artifact@v8
+        with:
+          name: generated-source
+      - name: Apt Update
+        run: apt update
+      - name: Install Dependencies
+        run: apt install -y clang libxmu-dev libxi-dev libgl-dev libegl1-mesa-dev dos2unix
+      - name: Build Binaries
+        run: |
+          make clean && SYSTEM=linux-clang     make
+          make clean && SYSTEM=linux-clang-egl make
+  compile-cmake:
+    name: Ubuntu Linux CMake Build
+    needs:
+      - generate-source
+    runs-on: ubuntu-linux
+    strategy:
+      matrix:
+        build-type:
+          - Debug
+          - Release
+        shared-lib:
+          - N
+          - Y
+        egl:
+          - N
+          - Y
+    steps:
+      - name: Git Checkout
+        uses: actions/checkout@v6
+      - name: Download Generated Source Code
+        uses: actions/download-artifact@v8
+        with:
+          name: generated-source
+      - name: Apt Update
+        run: apt update
+      - name: Install Dependencies
+        run: apt install -y cmake ninja-build libxmu-dev libxi-dev libgl-dev libegl1-mesa-dev dos2unix
+      - name: Build Binaries
+        run: |
+          mkdir build_
+          cmake build/cmake -B build_ -G Ninja --fresh -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} -DGLEW_X11=N -DGLEW_EGL=Y -DBUILD_SHARED_LIBS=${{ matrix.shared-lib }}
+          cmake --build build_
+          rm -Rf build_
+  compile-gcc:
+    name: Ubuntu Linux GCC Build
+    needs:
+      - generate-source
+    runs-on: ubuntu-linux
+    steps:
+      - name: Git Checkout
+        uses: actions/checkout@v6
+      - name: Download Generated Source Code
+        uses: actions/download-artifact@v8
+        with:
+          name: generated-source
+      - name: Apt Update
+        run: apt update
+      - name: Install Dependencies
+        run: apt install -y libxmu-dev libxi-dev libgl-dev libegl1-mesa-dev dos2unix
+      - name: Build Binaries
+        run: |
+          make clean && SYSTEM=linux     make
+          make clean && SYSTEM=linux-egl make
+  compile-win:
+    name: Ubuntu Linux GCC Cross-Build
+    needs:
+      - generate-source
+    runs-on: ubuntu-linux
+    steps:
+      - name: Git Checkout
+        uses: actions/checkout@v6
+      - name: Download Generated Source Code
+        uses: actions/download-artifact@v8
+        with:
+          name: generated-source
+      - name: Apt Update
+        run: apt update
+      - name: Install Dependencies
+        run: apt install -y mingw-w64 dos2unix
+      - name: Build Binaries
+        run: |
+          make clean && SYSTEM=linux-mingw32 make
+          make clean && SYSTEM=linux-mingw64 make
