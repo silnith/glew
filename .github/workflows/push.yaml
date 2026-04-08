@@ -45,6 +45,11 @@ jobs:
     needs:
       - generate-source
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        system:
+          - linux-clang
+          - linux-clang-egl
     steps:
       - name: Git Checkout
         uses: actions/checkout@v6
@@ -54,10 +59,12 @@ jobs:
           name: generated-source
       - name: Install Dependencies
         run: sudo apt install -y clang libxmu-dev libxi-dev libgl-dev libegl1-mesa-dev dos2unix
+      - name: Clean
+        run: make clean
       - name: Build Binaries
-        run: |
-          make clean && SYSTEM=linux-clang     make
-          make clean && SYSTEM=linux-clang-egl make
+        env:
+          SYSTEM: ${{ matrix.system }}
+        run: make
   compile-cmake:
     name: Ubuntu Linux CMake Build
     needs:
@@ -83,6 +90,9 @@ jobs:
           name: generated-source
       - name: Install Dependencies
         run: sudo apt install -y cmake ninja-build libxmu-dev libxi-dev libgl-dev libegl1-mesa-dev dos2unix
+      # Look into this:
+      # https://github.com/threeal/cmake-action
+      # https://github.com/threeal/ctest-action
       - name: Build Binaries
         run: |
           mkdir build_
@@ -94,6 +104,11 @@ jobs:
     needs:
       - generate-source
     runs-on: ubuntu-linux
+    strategy:
+      matrix:
+        system:
+          - linux
+          - linux-egl
     steps:
       - name: Git Checkout
         uses: actions/checkout@v6
@@ -103,15 +118,22 @@ jobs:
           name: generated-source
       - name: Install Dependencies
         run: sudo apt install -y libxmu-dev libxi-dev libgl-dev libegl1-mesa-dev dos2unix
+      - name: Clean
+        run: make clean
       - name: Build Binaries
-        run: |
-          make clean && SYSTEM=linux     make
-          make clean && SYSTEM=linux-egl make
+        env:
+          SYSTEM: ${{ matrix.system }}
+        run: make
   compile-win:
     name: Ubuntu Linux GCC Cross-Build
     needs:
       - generate-source
     runs-on: ubuntu-linux
+    strategy:
+      matrix:
+        system:
+          - linux-mingw32
+          - linux-mingw64
     steps:
       - name: Git Checkout
         uses: actions/checkout@v6
@@ -121,7 +143,9 @@ jobs:
           name: generated-source
       - name: Install Dependencies
         run: sudo apt install -y mingw-w64 dos2unix
+      - name: Clean
+        run: make clean
       - name: Build Binaries
-        run: |
-          make clean && SYSTEM=linux-mingw32 make
-          make clean && SYSTEM=linux-mingw64 make
+        env:
+          SYSTEM: ${{ matrix.system }}
+        run: make
