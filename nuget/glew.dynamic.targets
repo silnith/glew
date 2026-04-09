@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <ItemGroup>
+        <!--
+        The DLL must be copied to the output directory so that the executable linked against it can find it.
+        -->
+        <None Include="$(MSBuildThisFileDirectory)..\..\lib\native\$(PlatformTarget)\glew32.dll">
+            <Link>glew32.dll</Link>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+    </ItemGroup>
+</Project>

@@ -40,7 +40,7 @@ jobs:
           path: |
             glew-*.zip
             glew-*.tgz
-  compile-clang:
+  makefile-build:
     name: Ubuntu Linux Build
     needs:
       - generate-source
@@ -77,7 +77,7 @@ jobs:
           path: |
             bin/
             lib/
-  compile-cmake:
+  cmake-build:
     name: Ubuntu Linux CMake Build
     needs:
       - generate-source
@@ -129,3 +129,34 @@ jobs:
         with:
           name: binaries-${{ matrix.build-type }}-${{ case(matrix.egl, 'egl', 'x11') }}-${{ case(matrix.shared-lib, 'shared', 'static') }}
           path: install/*
+  nuget-package:
+    name: Create NuGet Package
+    needs:
+      - makefile-build
+    runs-on: windows-latest
+    steps:
+      - name: Git Checkout
+        uses: actions/checkout@v6
+      - name: Download Generated Source Code
+        uses: actions/download-artifact@v8
+        with:
+          name: generated-source
+      - name: Download Binaries (x86)
+        uses: actions/download-artifact@v8
+        with:
+          name: binaries-linux-mingw32
+          path: x86
+      - name: Download Binaries (x64)
+        uses: actions/download-artifact@v8
+        with:
+          name: binaries-linux-mingw64
+          path: x64
+      - name: NuGet Pack (DLL)
+        run: nuget pack nuget/glew.dynamic.nuspec -NonInteractive
+      - name: NuGet Pack (static)
+        run: nuget pack nuget/glew.static.nuspec -NonInteractive
+      - name: Upload Packages
+        uses: actions/upload-artifact@v7
+        with:
+          name: nuget
+          path: '**/*.nupkg'
