@@ -152,9 +152,9 @@ jobs:
           name: binaries-linux-mingw64
           path: x64
       - name: NuGet Pack (DLL)
-        run: nuget pack nuget/glew.dynamic.nuspec -NonInteractive
+        run: nuget pack nuget/glew.dynamic.nuspec -BasePath . -NonInteractive
       - name: NuGet Pack (static)
-        run: nuget pack nuget/glew.static.nuspec -NonInteractive
+        run: nuget pack nuget/glew.static.nuspec -BasePath . -NonInteractive
       - name: Upload Packages
         uses: actions/upload-artifact@v7
         with:
