@@ -151,11 +151,18 @@ jobs:
         with:
           name: binaries-linux-mingw64
           path: x64
-      - name: Show Files
+      - name: Rename
         shell: bash
-        run: find .
+        run: |
+          mv x86/lib/libglew32.dll.a x86/lib/glew32.lib
+          mv x64/lib/libglew32.dll.a x64/lib/glew32.lib
       - name: NuGet Pack (DLL)
         run: nuget pack nuget/glew.dynamic.nuspec -BasePath . -NonInteractive
+      - name: Rename
+        shell: bash
+        run: |
+          mv x86/lib/libglew32.a x86/lib/glew32.lib
+          mv x64/lib/libglew32.a x64/lib/glew32.lib
       - name: NuGet Pack (static)
         run: nuget pack nuget/glew.static.nuspec -BasePath . -NonInteractive
       - name: Upload Packages

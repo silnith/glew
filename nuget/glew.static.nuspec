@@ -66,8 +66,8 @@
         
         https://learn.microsoft.com/en-us/nuget/reference/nuspec#file-element-attributes
         -->
-        <file src="x86/lib/libglew32.a" target="lib/native/x86/glew32.lib" />
-        <file src="x64/lib/libglew32.a" target="lib/native/x64/glew32.lib" />
+        <file src="x86/lib/glew32.lib" target="lib/native/x86/" />
+        <file src="x64/lib/glew32.lib" target="lib/native/x64/" />
         <!-- C and C++ header files go into the "include" directory in the NuGet package by convention. -->
 		<file src="include/" target="/" />
         <file src="doc/" target="/" />
