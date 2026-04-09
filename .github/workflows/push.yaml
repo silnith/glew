@@ -151,6 +151,9 @@ jobs:
         with:
           name: binaries-linux-mingw64
           path: x64
+      - name: Show Files
+        shell: bash
+        run: find .
       - name: NuGet Pack (DLL)
         run: nuget pack nuget/glew.dynamic.nuspec -BasePath . -NonInteractive
       - name: NuGet Pack (static)
