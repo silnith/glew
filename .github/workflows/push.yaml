@@ -41,7 +41,7 @@ jobs:
             glew-*.zip
             glew-*.tgz
   makefile-build:
-    name: Ubuntu Linux Build
+    name: Makefile
     needs:
       - generate-source
     runs-on: ubuntu-latest
@@ -66,7 +66,7 @@ jobs:
         run: sudo apt install -y clang mingw-w64 libxmu-dev libxi-dev libgl-dev libegl1-mesa-dev dos2unix
       - name: Clean
         run: make clean
-      - name: Build Binaries
+      - name: Make
         env:
           SYSTEM: ${{ matrix.system }}
         run: make
@@ -78,7 +78,7 @@ jobs:
             bin/
             lib/
   cmake-build:
-    name: Ubuntu Linux CMake Build
+    name: CMake
     needs:
       - generate-source
     runs-on: ubuntu-latest
@@ -130,7 +130,7 @@ jobs:
           name: binaries-${{ matrix.build-type }}-${{ case(matrix.egl, 'egl', 'x11') }}-${{ case(matrix.shared-lib, 'shared', 'static') }}
           path: install/*
   nuget-package:
-    name: Create NuGet Package
+    name: NuGet
     needs:
       - makefile-build
     runs-on: windows-latest
