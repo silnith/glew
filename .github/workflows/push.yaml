@@ -29,8 +29,10 @@ jobs:
             build
       # Look into this:
       # https://github.com/marketplace/actions/cache-apt-packages
+      - name: Update
+        run: sudo apt-get update
       - name: Install Dependencies
-        run: sudo apt install -y dos2unix
+        run: sudo apt-get install -y dos2unix
       - name: Generate Distributable Source
         run: make dist-src
       - name: Upload Distributable Source
@@ -62,8 +64,10 @@ jobs:
         uses: actions/download-artifact@v8
         with:
           name: generated-source
+      - name: Update
+        run: sudo apt-get update
       - name: Install Dependencies
-        run: sudo apt install -y clang mingw-w64 libxmu-dev libxi-dev libgl-dev libegl1-mesa-dev dos2unix
+        run: sudo apt-get install -y clang mingw-w64 libxmu-dev libxi-dev libgl-dev libegl1-mesa-dev dos2unix
       - name: Clean
         run: make clean
       - name: Make
@@ -101,8 +105,10 @@ jobs:
         uses: actions/download-artifact@v8
         with:
           name: generated-source
+      - name: Update
+        run: sudo apt-get update
       - name: Install Dependencies
-        run: sudo apt install -y cmake ninja-build libxmu-dev libxi-dev libgl-dev libegl1-mesa-dev dos2unix
+        run: sudo apt-get install -y cmake ninja-build libxmu-dev libxi-dev libgl-dev libegl1-mesa-dev dos2unix
       # Look into this:
       # https://github.com/threeal/cmake-action
       # https://github.com/threeal/ctest-action
