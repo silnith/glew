@@ -17,10 +17,10 @@ jobs:
         with:
           key: dpkgs
           path: ~/.dpkg/
-      - name: Make Partial Directory
-        run: mkdir -p ~/.dpkg/partial
       - name: Update
         run: sudo apt-get update -o dir::cache::archives=~/.dpkg/
+      - name: Make Partial Directory
+        run: mkdir -v -p ~/.dpkg/partial
       - name: Install Dependencies
         run: >-
           sudo apt-get install
@@ -63,10 +63,10 @@ jobs:
             build
       # Look into this:
       # https://github.com/marketplace/actions/cache-apt-packages
-      - name: Make Partial Directory
-        run: mkdir -p ~/.dpkg/partial
       - name: Update
         run: sudo apt-get update -o dir::cache::archives=~/.dpkg/
+      - name: Make Partial Directory
+        run: mkdir -v -p ~/.dpkg/partial
       - name: Install Dependencies
         run: sudo apt-get install -o dir::cache::archives=~/.dpkg/ -y dos2unix
       - name: Generate Distributable Source
@@ -106,10 +106,10 @@ jobs:
         uses: actions/download-artifact@v8
         with:
           name: generated-source
-      - name: Make Partial Directory
-        run: mkdir -p ~/.dpkg/partial
       - name: Update
         run: sudo apt-get update -o dir::cache::archives=~/.dpkg/
+      - name: Make Partial Directory
+        run: mkdir -v -p ~/.dpkg/partial
       - name: Install Dependencies
         run: sudo apt-get install -o dir::cache::archives=~/.dpkg/ -y clang mingw-w64 libxmu-dev libxi-dev libgl-dev libegl1-mesa-dev dos2unix
       - name: Clean
@@ -155,10 +155,10 @@ jobs:
         uses: actions/download-artifact@v8
         with:
           name: generated-source
-      - name: Make Partial Directory
-        run: mkdir -p ~/.dpkg/partial
       - name: Update
         run: sudo apt-get update -o dir::cache::archives=~/.dpkg/
+      - name: Make Partial Directory
+        run: mkdir -v -p ~/.dpkg/partial
       - name: Install Dependencies
         run: sudo apt-get install -o dir::cache::archives=~/.dpkg/ -y cmake ninja-build libxmu-dev libxi-dev libgl-dev libegl1-mesa-dev dos2unix
       # Look into this:
