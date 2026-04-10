@@ -18,7 +18,7 @@ jobs:
           key: dpkgs
           path: ~/.dpkg/
       - name: Update
-        run: sudo apt-get update
+        run: sudo apt-get update -o dir::cache::archives=~/.dpkg/
       - name: Install Dependencies
         run: >-
           sudo apt-get install
@@ -62,7 +62,7 @@ jobs:
       # Look into this:
       # https://github.com/marketplace/actions/cache-apt-packages
       - name: Update
-        run: sudo apt-get update
+        run: sudo apt-get update -o dir::cache::archives=~/.dpkg/
       - name: Install Dependencies
         run: sudo apt-get install -o dir::cache::archives=~/.dpkg/ -y dos2unix
       - name: Generate Distributable Source
@@ -103,7 +103,7 @@ jobs:
         with:
           name: generated-source
       - name: Update
-        run: sudo apt-get update
+        run: sudo apt-get update -o dir::cache::archives=~/.dpkg/
       - name: Install Dependencies
         run: sudo apt-get install -o dir::cache::archives=~/.dpkg/ -y clang mingw-w64 libxmu-dev libxi-dev libgl-dev libegl1-mesa-dev dos2unix
       - name: Clean
@@ -150,7 +150,7 @@ jobs:
         with:
           name: generated-source
       - name: Update
-        run: sudo apt-get update
+        run: sudo apt-get update -o dir::cache::archives=~/.dpkg/
       - name: Install Dependencies
         run: sudo apt-get install -o dir::cache::archives=~/.dpkg/ -y cmake ninja-build libxmu-dev libxi-dev libgl-dev libegl1-mesa-dev dos2unix
       # Look into this:
