@@ -25,9 +25,11 @@ jobs:
         run: >-
           sudo apt-get install
           --download-only
-          -o Dir::Cache::archives=.dpkg/
-          -o Binary::apt::APT::Keep-Downloaded-Packages=true
-          -y
+          --print-uris
+          --option Dir::Cache::archives=.dpkg/
+          --option Binary::apt::APT::Keep-Downloaded-Packages=true
+          --option APT::Keep-Downloaded-Packages=true
+          --assume-yes
           clang
           cmake
           mingw-w64
