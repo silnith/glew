@@ -8,54 +8,12 @@ on:
       - '*'
 
 jobs:
-  cache-debian-packages:
-    name: Cache Debian Packages
-    runs-on: ubuntu-latest
-    steps:
-      - name: Cache Dependencies
-        uses: actions/cache@v5
-        with:
-          key: dpkgs-2
-          path: .dpkg/
-      - name: Make Partial Directory
-        run: mkdir -v -p .dpkg/partial
-      - name: Update
-        run: sudo apt-get update -o Dir::Cache::archives=.dpkg/
-      - name: Install Dependencies
-        run: >-
-          sudo apt-get install
-          --download-only
-          --print-uris
-          --option Dir::Cache::archives=.dpkg/
-          --option Binary::apt::APT::Keep-Downloaded-Packages=true
-          --option APT::Keep-Downloaded-Packages=true
-          --assume-yes
-          clang
-          cmake
-          mingw-w64
-          ninja-build
-          libxmu-dev
-          libxi-dev
-          libgl-dev
-          libegl1-mesa-dev
-          dos2unix
-      - name: Show Files
-        run: |
-          find .dpkg
-          sudo find /var/cache/apt/archives
   generate-source:
     name: Generate Source Code
-    needs:
-      - cache-debian-packages
     runs-on: ubuntu-latest
     steps:
       - name: Git Checkout
         uses: actions/checkout@v6
-      - name: Fetch Cached Dependencies
-        uses: actions/cache/restore@v5
-        with:
-          key: dpkgs-2
-          path: .dpkg/
       - name: Clobber
         run: make -C auto clobber
       - name: Generate Extensions
@@ -71,12 +29,10 @@ jobs:
             build
       # Look into this:
       # https://github.com/marketplace/actions/cache-apt-packages
-      - name: Make Partial Directory
-        run: mkdir -v -p .dpkg/partial
       - name: Update
-        run: sudo apt-get update -o Dir::Cache::archives=.dpkg/
+        run: sudo apt-get update
       - name: Install Dependencies
-        run: sudo apt-get install -o Dir::Cache::archives=.dpkg/ -y dos2unix
+        run: sudo apt-get install -y dos2unix
       - name: Generate Distributable Source
         run: make dist-src
       - name: Upload Distributable Source
@@ -89,7 +45,6 @@ jobs:
   makefile-build:
     name: Makefile
     needs:
-      - cache-debian-packages
       - generate-source
     runs-on: ubuntu-latest
     strategy:
@@ -105,21 +60,14 @@ jobs:
     steps:
       - name: Git Checkout
         uses: actions/checkout@v6
-      - name: Fetch Cached Dependencies
-        uses: actions/cache/restore@v5
-        with:
-          key: dpkgs-2
-          path: .dpkg/
       - name: Download Generated Source Code
         uses: actions/download-artifact@v8
         with:
           name: generated-source
-      - name: Make Partial Directory
-        run: mkdir -v -p .dpkg/partial
       - name: Update
-        run: sudo apt-get update -o Dir::Cache::archives=.dpkg/
+        run: sudo apt-get update
       - name: Install Dependencies
-        run: sudo apt-get install -o Dir::Cache::archives=.dpkg/ -y clang mingw-w64 libxmu-dev libxi-dev libgl-dev libegl1-mesa-dev dos2unix
+        run: sudo apt-get install -y clang mingw-w64 libxmu-dev libxi-dev libgl-dev libegl1-mesa-dev dos2unix
       - name: Clean
         run: make clean
       - name: Make
@@ -136,7 +84,6 @@ jobs:
   cmake-build:
     name: CMake
     needs:
-      - cache-debian-packages
       - generate-source
     runs-on: ubuntu-latest
     strategy:
@@ -154,21 +101,14 @@ jobs:
     steps:
       - name: Git Checkout
         uses: actions/checkout@v6
-      - name: Fetch Cached Dependencies
-        uses: actions/cache/restore@v5
-        with:
-          key: dpkgs-2
-          path: .dpkg/
       - name: Download Generated Source Code
         uses: actions/download-artifact@v8
         with:
           name: generated-source
-      - name: Make Partial Directory
-        run: mkdir -v -p .dpkg/partial
       - name: Update
-        run: sudo apt-get update -o Dir::Cache::archives=.dpkg/
+        run: sudo apt-get update
       - name: Install Dependencies
-        run: sudo apt-get install -o Dir::Cache::archives=.dpkg/ -y cmake ninja-build libxmu-dev libxi-dev libgl-dev libegl1-mesa-dev dos2unix
+        run: sudo apt-get install -y cmake ninja-build libxmu-dev libxi-dev libgl-dev libegl1-mesa-dev dos2unix
       # Look into this:
       # https://github.com/threeal/cmake-action
       # https://github.com/threeal/ctest-action
