@@ -40,6 +40,7 @@ jobs:
       - name: Show Files
         run: |
           find .dpkg
+          find /var/cache/apt/archives
   generate-source:
     name: Generate Source Code
     needs:
