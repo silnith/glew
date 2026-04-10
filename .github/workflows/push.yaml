@@ -16,13 +16,13 @@ jobs:
         uses: actions/cache@v5
         with:
           key: dpkgs
-          path: .dpkg
+          path: ~/.dpkg/
       - name: Update
         run: sudo apt-get update
       - name: Install Dependencies
         run: >-
           sudo apt-get install
-          -o dir::cache::archives=.dpkg
+          -o dir::cache::archives=~/.dpkg/
           -y
           clang
           cmake
@@ -45,7 +45,7 @@ jobs:
         uses: actions/cache/restore@v5
         with:
           key: dpkgs
-          path: .dpkg
+          path: ~/.dpkg/
       - name: Clobber
         run: make -C auto clobber
       - name: Generate Extensions
@@ -64,7 +64,7 @@ jobs:
       - name: Update
         run: sudo apt-get update
       - name: Install Dependencies
-        run: sudo apt-get install -o dir::cache::archives=.dpkg -y dos2unix
+        run: sudo apt-get install -o dir::cache::archives=~/.dpkg/ -y dos2unix
       - name: Generate Distributable Source
         run: make dist-src
       - name: Upload Distributable Source
@@ -97,7 +97,7 @@ jobs:
         uses: actions/cache/restore@v5
         with:
           key: dpkgs
-          path: .dpkg
+          path: ~/.dpkg/
       - name: Download Generated Source Code
         uses: actions/download-artifact@v8
         with:
@@ -105,7 +105,7 @@ jobs:
       - name: Update
         run: sudo apt-get update
       - name: Install Dependencies
-        run: sudo apt-get install -o dir::cache::archives=.dpkg -y clang mingw-w64 libxmu-dev libxi-dev libgl-dev libegl1-mesa-dev dos2unix
+        run: sudo apt-get install -o dir::cache::archives=~/.dpkg/ -y clang mingw-w64 libxmu-dev libxi-dev libgl-dev libegl1-mesa-dev dos2unix
       - name: Clean
         run: make clean
       - name: Make
@@ -144,7 +144,7 @@ jobs:
         uses: actions/cache/restore@v5
         with:
           key: dpkgs
-          path: .dpkg
+          path: ~/.dpkg/
       - name: Download Generated Source Code
         uses: actions/download-artifact@v8
         with:
@@ -152,7 +152,7 @@ jobs:
       - name: Update
         run: sudo apt-get update
       - name: Install Dependencies
-        run: sudo apt-get install -o dir::cache::archives=.dpkg -y cmake ninja-build libxmu-dev libxi-dev libgl-dev libegl1-mesa-dev dos2unix
+        run: sudo apt-get install -o dir::cache::archives=~/.dpkg/ -y cmake ninja-build libxmu-dev libxi-dev libgl-dev libegl1-mesa-dev dos2unix
       # Look into this:
       # https://github.com/threeal/cmake-action
       # https://github.com/threeal/ctest-action
