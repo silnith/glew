@@ -165,8 +165,6 @@ jobs:
         shell: bash
         run: |
           sed --in-place 's/\$version\$/${{ steps.get-version.outputs.GLEW_MAJOR }}.${{ steps.get-version.outputs.GLEW_MINOR }}.${{ steps.get-version.outputs.GLEW_MICRO }}/g' nuget/glew.dynamic.nuspec nuget/glew.static.nuspec
-          cat nuget/glew.dynamic.nuspec
-          cat nuget/glew.static.nuspec
       - name: Rename
         shell: bash
         run: |
