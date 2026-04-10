@@ -154,38 +154,31 @@ jobs:
       - id: get-version
         name: Get Version
         shell: bash
-        run: |
-          cat config/version | sed 's/ //g;s/(/{/g;s/)/}/g'
-          cat config/version | sed 's/ //g;s/(/{/g;s/)/}/g' >> "$GITHUB_OUTPUT"
-      - name: Check Version
-        env:
-          GLEW_MAJOR: ${{ steps.get-version.outputs.GLEW_MAJOR }}
-          GLEW_MINOR: ${{ steps.get-version.outputs.GLEW_MINOR }}
-          GLEW_MICRO: ${{ steps.get-version.outputs.GLEW_MICRO }}
-        shell: bash
-        run: |
-          echo "${GLEW_MAJOR}.${GLEW_MINOR}.${GLEW_MICRO}"
-          echo "${GLEW_MINOR}"
-          echo "${GLEW_MICRO}"
-          echo "${GLEW_VERSION}"
-          echo "${{ steps.get-version.outputs.GLEW_MAJOR }}"
-          echo "${{ steps.get-version.outputs.GLEW_MINOR }}"
-          echo "${{ steps.get-version.outputs.GLEW_MICRO }}"
-          echo "${{ steps.get-version.outputs.GLEW_VERSION }}"
+        run: cat config/version | sed 's/ //g;s/(/{/g;s/)/}/g' >> "$GITHUB_OUTPUT"
       - name: Rename
         shell: bash
         run: |
           mv x86/lib/libglew32.dll.a x86/lib/glew32.lib
           mv x64/lib/libglew32.dll.a x64/lib/glew32.lib
       - name: NuGet Pack (DLL)
-        run: nuget pack nuget/glew.dynamic.nuspec -BasePath . -NonInteractive
+        run: >-
+          nuget pack nuget/glew.dynamic.nuspec
+          -BasePath .
+          -NonInteractive
+          -Verbosity detailed
+          -Properties Version=${{ steps.get-version.outputs.GLEW_VERSION }};Configuration=Release
       - name: Rename
         shell: bash
         run: |
           mv x86/lib/libglew32.a x86/lib/glew32.lib
           mv x64/lib/libglew32.a x64/lib/glew32.lib
       - name: NuGet Pack (static)
-        run: nuget pack nuget/glew.static.nuspec -BasePath . -NonInteractive
+        run: >-
+          nuget pack nuget/glew.static.nuspec
+          -BasePath .
+          -NonInteractive
+          -Verbosity detailed
+          -Properties Version=${{ steps.get-version.outputs.GLEW_VERSION }};Configuration=Release
       - name: Upload Packages
         uses: actions/upload-artifact@v7
         with:

@@ -7,7 +7,7 @@
         https://learn.microsoft.com/en-us/nuget/reference/nuspec#id
         -->
 		<id>glew.dynamic</id>
-		<version>2.3.1</version>
+		<version>$version$</version>
 		<description>The OpenGL Extension Wrangler Library</description>
         <!--
         The authors declared here are not propagated to the NuGet.org package listing.
