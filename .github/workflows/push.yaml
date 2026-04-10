@@ -37,6 +37,9 @@ jobs:
           libgl-dev
           libegl1-mesa-dev
           dos2unix
+      - name: Show Files
+        run: |
+          find .dpkg
   generate-source:
     name: Generate Source Code
     needs:
