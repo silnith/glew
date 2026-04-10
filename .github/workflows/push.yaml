@@ -151,6 +151,18 @@ jobs:
         with:
           name: binaries-linux-mingw64
           path: x64
+      - id: get-version
+        name: Get Version
+        shell: bash
+        run: |
+          cat config/version >> "$GITHUB_OUTPUT"
+      - name: Check Version
+        shell: bash
+        run: |
+          echo ${{ steps.get-version.outputs.GLEW_MAJOR }}
+          echo ${{ steps.get-version.outputs.GLEW_MINOR }}
+          echo ${{ steps.get-version.outputs.GLEW_MICRO }}
+          echo ${{ steps.get-version.outputs.GLEW_VERSION }}
       - name: Rename
         shell: bash
         run: |
