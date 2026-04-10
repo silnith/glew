@@ -163,7 +163,10 @@ jobs:
         run: cat config/version | sed 's/ //g;s/(/{/g;s/)/}/g' >> "$GITHUB_OUTPUT"
       - name: Set Version
         shell: bash
-        run: sed --in-place 's/$version$/${{ steps.get-version.outputs.GLEW_VERSION }}/g' nuget/glew.dynamic.nuspec nuget/glew.static.nuspec
+        run: |
+          sed --in-place 's/$version$/${{ steps.get-version.outputs.GLEW_VERSION }}/g' nuget/glew.dynamic.nuspec nuget/glew.static.nuspec
+          cat nuget/glew.dynamic.nuspec
+          cat nuget/glew.static.nuspec
       - name: Rename
         shell: bash
         run: |
