@@ -161,6 +161,9 @@ jobs:
         name: Get Version
         shell: bash
         run: cat config/version | sed 's/ //g;s/(/{/g;s/)/}/g' >> "$GITHUB_OUTPUT"
+      - name: Set Version
+        shell: bash
+        run: sed --in-place 's/$version$/${{ steps.get-version.outputs.GLEW_VERSION }}' nuget/glew.dynamic.nuspec nuget/glew.static.nuspec
       - name: Rename
         shell: bash
         run: |
@@ -172,7 +175,6 @@ jobs:
           -BasePath .
           -NonInteractive
           -Verbosity detailed
-          -Properties version=${{ steps.get-version.outputs.GLEW_VERSION }}
       - name: Rename
         shell: bash
         run: |
@@ -184,7 +186,6 @@ jobs:
           -BasePath .
           -NonInteractive
           -Verbosity detailed
-          -Properties Version=${{ steps.get-version.outputs.GLEW_VERSION }}
       - name: Upload Packages
         uses: actions/upload-artifact@v7
         with:
