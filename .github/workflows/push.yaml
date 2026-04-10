@@ -155,17 +155,16 @@ jobs:
         name: Get Version
         shell: bash
         run: |
-          cat config/version | sed 's/ //g'
-          cat config/version | sed 's/ //g' >> "$GITHUB_OUTPUT"
+          cat config/version | sed 's/ //g;s/(/{/g;s/)/}/g'
+          cat config/version | sed 's/ //g;s/(/{/g;s/)/}/g' >> "$GITHUB_OUTPUT"
       - name: Check Version
         env:
           GLEW_MAJOR: ${{ steps.get-version.outputs.GLEW_MAJOR }}
           GLEW_MINOR: ${{ steps.get-version.outputs.GLEW_MINOR }}
           GLEW_MICRO: ${{ steps.get-version.outputs.GLEW_MICRO }}
-          GLEW_VERSION: ${{ steps.get-version.outputs.GLEW_VERSION }}
         shell: bash
         run: |
-          echo "${GLEW_MAJOR}"
+          echo "${GLEW_MAJOR}.${GLEW_MINOR}.${GLEW_MICRO}"
           echo "${GLEW_MINOR}"
           echo "${GLEW_MICRO}"
           echo "${GLEW_VERSION}"
