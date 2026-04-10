@@ -25,6 +25,7 @@ jobs:
         run: >-
           sudo apt-get install
           -o Dir::Cache::archives=.dpkg/
+          -o Binary::apt::APT::Keep-Downloaded-Packages=true
           -y
           clang
           cmake
@@ -224,7 +225,7 @@ jobs:
           -BasePath .
           -NonInteractive
           -Verbosity detailed
-          -Properties Version=${{ steps.get-version.outputs.GLEW_VERSION }};Configuration=Release
+          -Properties version=${{ steps.get-version.outputs.GLEW_VERSION }}
       - name: Rename
         shell: bash
         run: |
@@ -236,7 +237,7 @@ jobs:
           -BasePath .
           -NonInteractive
           -Verbosity detailed
-          -Properties Version=${{ steps.get-version.outputs.GLEW_VERSION }};Configuration=Release
+          -Properties Version=${{ steps.get-version.outputs.GLEW_VERSION }}
       - name: Upload Packages
         uses: actions/upload-artifact@v7
         with:
