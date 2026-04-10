@@ -17,6 +17,8 @@ jobs:
         with:
           key: dpkgs
           path: ~/.dpkg/
+      - name: Make Partial Directory
+        run: mkdir -p ~/.dpkg/partial
       - name: Update
         run: sudo apt-get update -o dir::cache::archives=~/.dpkg/
       - name: Install Dependencies
@@ -61,6 +63,8 @@ jobs:
             build
       # Look into this:
       # https://github.com/marketplace/actions/cache-apt-packages
+      - name: Make Partial Directory
+        run: mkdir -p ~/.dpkg/partial
       - name: Update
         run: sudo apt-get update -o dir::cache::archives=~/.dpkg/
       - name: Install Dependencies
@@ -102,6 +106,8 @@ jobs:
         uses: actions/download-artifact@v8
         with:
           name: generated-source
+      - name: Make Partial Directory
+        run: mkdir -p ~/.dpkg/partial
       - name: Update
         run: sudo apt-get update -o dir::cache::archives=~/.dpkg/
       - name: Install Dependencies
@@ -149,6 +155,8 @@ jobs:
         uses: actions/download-artifact@v8
         with:
           name: generated-source
+      - name: Make Partial Directory
+        run: mkdir -p ~/.dpkg/partial
       - name: Update
         run: sudo apt-get update -o dir::cache::archives=~/.dpkg/
       - name: Install Dependencies
