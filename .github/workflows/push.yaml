@@ -8,12 +8,44 @@ on:
       - '*'
 
 jobs:
+  cache-debian-packages:
+    name: Cache Debian Packages
+    runs-on: ubuntu-latest
+    steps:
+      - name: Cache Dependencies
+        uses: actions/cache@v5
+        with:
+          key: dpkgs
+          path: .dpkg
+      - name: Update
+        run: sudo apt-get update
+      - name: Install Dependencies
+        run: >-
+          sudo apt-get install
+          -o dir::cache::archives=.dpkg
+          -y
+          clang
+          cmake
+          mingw-w64
+          ninja-build
+          libxmu-dev
+          libxi-dev
+          libgl-dev
+          libegl1-mesa-dev
+          dos2unix
   generate-source:
     name: Generate Source Code
+    needs:
+      - cache-debian-packages
     runs-on: ubuntu-latest
     steps:
       - name: Git Checkout
         uses: actions/checkout@v6
+      - name: Fetch Cached Dependencies
+        uses: actions/cache/restore@v5
+        with:
+          key: dpkgs
+          path: .dpkg
       - name: Clobber
         run: make -C auto clobber
       - name: Generate Extensions
@@ -32,7 +64,7 @@ jobs:
       - name: Update
         run: sudo apt-get update
       - name: Install Dependencies
-        run: sudo apt-get install -y dos2unix
+        run: sudo apt-get install -o dir::cache::archives=.dpkg -y dos2unix
       - name: Generate Distributable Source
         run: make dist-src
       - name: Upload Distributable Source
@@ -45,6 +77,7 @@ jobs:
   makefile-build:
     name: Makefile
     needs:
+      - cache-debian-packages
       - generate-source
     runs-on: ubuntu-latest
     strategy:
@@ -60,6 +93,11 @@ jobs:
     steps:
       - name: Git Checkout
         uses: actions/checkout@v6
+      - name: Fetch Cached Dependencies
+        uses: actions/cache/restore@v5
+        with:
+          key: dpkgs
+          path: .dpkg
       - name: Download Generated Source Code
         uses: actions/download-artifact@v8
         with:
@@ -67,7 +105,7 @@ jobs:
       - name: Update
         run: sudo apt-get update
       - name: Install Dependencies
-        run: sudo apt-get install -y clang mingw-w64 libxmu-dev libxi-dev libgl-dev libegl1-mesa-dev dos2unix
+        run: sudo apt-get install -o dir::cache::archives=.dpkg -y clang mingw-w64 libxmu-dev libxi-dev libgl-dev libegl1-mesa-dev dos2unix
       - name: Clean
         run: make clean
       - name: Make
@@ -84,6 +122,7 @@ jobs:
   cmake-build:
     name: CMake
     needs:
+      - cache-debian-packages
       - generate-source
     runs-on: ubuntu-latest
     strategy:
@@ -101,6 +140,11 @@ jobs:
     steps:
       - name: Git Checkout
         uses: actions/checkout@v6
+      - name: Fetch Cached Dependencies
+        uses: actions/cache/restore@v5
+        with:
+          key: dpkgs
+          path: .dpkg
       - name: Download Generated Source Code
         uses: actions/download-artifact@v8
         with:
@@ -108,7 +152,7 @@ jobs:
       - name: Update
         run: sudo apt-get update
       - name: Install Dependencies
-        run: sudo apt-get install -y cmake ninja-build libxmu-dev libxi-dev libgl-dev libegl1-mesa-dev dos2unix
+        run: sudo apt-get install -o dir::cache::archives=.dpkg -y cmake ninja-build libxmu-dev libxi-dev libgl-dev libegl1-mesa-dev dos2unix
       # Look into this:
       # https://github.com/threeal/cmake-action
       # https://github.com/threeal/ctest-action
