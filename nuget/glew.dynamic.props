@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+	<ItemDefinitionGroup>
+		<ClCompile>
+            <!--
+            The $(MSBuildThisFileDirectory) resolves to the location of this file, which is inside of the
+            "build/native" directory inside of the NuGet package.  Therefore, we need to go up two directories
+            to find the rest of the NuGet package contents, such as the include directory.
+            -->
+			<AdditionalIncludeDirectories>$(MSBuildThisFileDirectory)..\..\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+		</ClCompile>
+        <!--
+        It is possible to attach Condition attributes to these commands.
+        This can be used to provide different paths or libraries for Debug versus non-Debug builds.
+        -->
+		<Link>
+			<AdditionalLibraryDirectories>$(MSBuildThisFileDirectory)..\..\lib\native\$(PlatformTarget);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+		</Link>
+		<Link>
+			<AdditionalDependencies>glew32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+		</Link>
+	</ItemDefinitionGroup>
+</Project>

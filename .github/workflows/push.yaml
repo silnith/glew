@@ -29,8 +29,10 @@ jobs:
             build
       # Look into this:
       # https://github.com/marketplace/actions/cache-apt-packages
+      - name: Update
+        run: sudo apt-get update
       - name: Install Dependencies
-        run: sudo apt install -y dos2unix
+        run: sudo apt-get install -y dos2unix
       - name: Generate Distributable Source
         run: make dist-src
       - name: Upload Distributable Source
@@ -40,8 +42,8 @@ jobs:
           path: |
             glew-*.zip
             glew-*.tgz
-  compile-clang:
-    name: Ubuntu Linux Build
+  makefile-build:
+    name: Makefile
     needs:
       - generate-source
     runs-on: ubuntu-latest
@@ -62,11 +64,13 @@ jobs:
         uses: actions/download-artifact@v8
         with:
           name: generated-source
+      - name: Update
+        run: sudo apt-get update
       - name: Install Dependencies
-        run: sudo apt install -y clang mingw-w64 libxmu-dev libxi-dev libgl-dev libegl1-mesa-dev dos2unix
+        run: sudo apt-get install -y clang mingw-w64 libxmu-dev libxi-dev libgl-dev libegl1-mesa-dev dos2unix
       - name: Clean
         run: make clean
-      - name: Build Binaries
+      - name: Make
         env:
           SYSTEM: ${{ matrix.system }}
         run: make
@@ -77,8 +81,8 @@ jobs:
           path: |
             bin/
             lib/
-  compile-cmake:
-    name: Ubuntu Linux CMake Build
+  cmake-build:
+    name: CMake
     needs:
       - generate-source
     runs-on: ubuntu-latest
@@ -101,8 +105,10 @@ jobs:
         uses: actions/download-artifact@v8
         with:
           name: generated-source
+      - name: Update
+        run: sudo apt-get update
       - name: Install Dependencies
-        run: sudo apt install -y cmake ninja-build libxmu-dev libxi-dev libgl-dev libegl1-mesa-dev dos2unix
+        run: sudo apt-get install -y cmake ninja-build libxmu-dev libxi-dev libgl-dev libegl1-mesa-dev dos2unix
       # Look into this:
       # https://github.com/threeal/cmake-action
       # https://github.com/threeal/ctest-action
@@ -129,3 +135,60 @@ jobs:
         with:
           name: binaries-${{ matrix.build-type }}-${{ case(matrix.egl, 'egl', 'x11') }}-${{ case(matrix.shared-lib, 'shared', 'static') }}
           path: install/*
+  nuget-package:
+    name: NuGet
+    needs:
+      - makefile-build
+    runs-on: windows-latest
+    steps:
+      - name: Git Checkout
+        uses: actions/checkout@v6
+      - name: Download Generated Source Code
+        uses: actions/download-artifact@v8
+        with:
+          name: generated-source
+      - name: Download Binaries (x86)
+        uses: actions/download-artifact@v8
+        with:
+          name: binaries-linux-mingw32
+          path: x86
+      - name: Download Binaries (x64)
+        uses: actions/download-artifact@v8
+        with:
+          name: binaries-linux-mingw64
+          path: x64
+      - id: get-version
+        name: Get Version
+        shell: bash
+        run: cat config/version | sed 's/ //g;s/(/{/g;s/)/}/g' >> "$GITHUB_OUTPUT"
+      - name: Set Version
+        shell: bash
+        run: |
+          sed --in-place 's/\$version\$/${{ steps.get-version.outputs.GLEW_MAJOR }}.${{ steps.get-version.outputs.GLEW_MINOR }}.${{ steps.get-version.outputs.GLEW_MICRO }}/g' nuget/glew.dynamic.nuspec nuget/glew.static.nuspec
+      - name: Rename
+        shell: bash
+        run: |
+          mv x86/lib/libglew32.dll.a x86/lib/glew32.lib
+          mv x64/lib/libglew32.dll.a x64/lib/glew32.lib
+      - name: NuGet Pack (DLL)
+        run: >-
+          nuget pack nuget/glew.dynamic.nuspec
+          -BasePath .
+          -NonInteractive
+          -Verbosity detailed
+      - name: Rename
+        shell: bash
+        run: |
+          mv x86/lib/libglew32.a x86/lib/glew32.lib
+          mv x64/lib/libglew32.a x64/lib/glew32.lib
+      - name: NuGet Pack (static)
+        run: >-
+          nuget pack nuget/glew.static.nuspec
+          -BasePath .
+          -NonInteractive
+          -Verbosity detailed
+      - name: Upload Packages
+        uses: actions/upload-artifact@v7
+        with:
+          name: nuget
+          path: '**/*.nupkg'

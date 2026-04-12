@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+	<metadata>
+        <!--
+        The name of this file must match the ID of the NuGet package declared here.
+        
+        https://learn.microsoft.com/en-us/nuget/reference/nuspec#id
+        -->
+		<id>glew.static</id>
+		<version>$version$</version>
+		<description>The OpenGL Extension Wrangler Library</description>
+        <!--
+        The authors declared here are not propagated to the NuGet.org package listing.
+        
+        https://learn.microsoft.com/en-us/nuget/reference/nuspec#authors
+        -->
+		<authors>Nigel Stewart, Milan Ikits, Marcelo Magallon</authors>
+		<projectUrl>https://glew.sourceforge.net/</projectUrl>
+        <!--
+        It is possible to declare a composite of multiple license SPDX identifiers.
+        
+        https://learn.microsoft.com/en-us/nuget/reference/nuspec#license
+        -->
+        <license type="file">LICENSE.txt</license>
+        <!-- Icons must be JPEG or PNG. Recommended size is 128x128. -->
+        <icon>doc/glew.png</icon>
+        <!-- A readme file must be in Markdown format, nothing else is supported. -->
+		<readme>doc/README.md</readme>
+		<requireLicenseAcceptance>false</requireLicenseAcceptance>
+		<developmentDependency>false</developmentDependency>
+		<copyright>
+            GLEW is originally derived from the EXTGL project by Lev Povalahev. The source code is licensed under the Modified BSD License, the Mesa 3-D License (MIT) and the Khronos License (MIT).
+
+            The automatic code generation scripts are released under the GNU GPL.
+        </copyright>
+		<language>en-US</language>
+		<tags>native opengl wgl glew x86 x64 arm arm64</tags>
+        <!-- Unfortunately, SourceLink for native code does not add the repository
+        information to the generated NuGet package, it only modifies the generated PDB.
+        So this must remain hard-coded here. -->
+		<repository type="git" url="https://github.com/nigels-com/glew.git" />
+		<title>The OpenGL Extension Wrangler Library</title>
+		<dependencies>
+            <!-- This declares that the NuGet package contains native code, not .NET managed code. -->
+			<group targetFramework="native" />
+		</dependencies>
+	</metadata>
+	<files>
+        <!-- The license file must be placed in the same spot declared in the license metadata element above. -->
+        <file src="LICENSE.txt" target="/" />
+        <!-- The targets and props files must be named for the NuGet package ID, just like this file.
+        They must be placed in the "build/native" directory inside of the NuGet package in order for
+        MSBuild to be able to use them. -->
+		<file src="nuget/glew.static.props" target="build/native/" />
+		<file src="nuget/glew.static.targets" target="build/native/" />
+        <!--
+        The "lib" directory only has special meaning for managed code, it is not necessary for native code.
+        
+        Native code that will be loaded by the CLR must be in the "runtime/<rid>/native" directory.
+        The most useful RIDs are probably "win-x86", "win-x64", "win-arm64", and the like.
+        
+        Native code that will only be used by other native code can be anywhere.
+        -->
+        <!--
+        Will this work?  The documentation says that only "lib", "content", "build", and "tools" are allowed.
+        
+        https://learn.microsoft.com/en-us/nuget/reference/nuspec#file-element-attributes
+        -->
+        <file src="x86/lib/glew32.lib" target="lib/native/x86/" />
+        <file src="x64/lib/glew32.lib" target="lib/native/x64/" />
+        <!-- C and C++ header files go into the "include" directory in the NuGet package by convention. -->
+		<file src="include/" target="/" />
+        <file src="doc/" target="/" />
+        <file src="nuget/README.md" target="doc/" />
+	</files>
+</package>
