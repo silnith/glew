@@ -286,4 +286,18 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: nuget
-          path: '**/*.nupkg'
+          path: 'build/vc16/**/*.nupkg'
+      - name: NuGet Push (DLL)
+        working-directory: build/vc16/glew_shared/
+        run: >-
+          nuget push *.nupkg
+          -ApiKey ${{ secrets.GITHUB_TOKEN }}
+          -Source GitHub
+          -NonInteractive
+      - name: NuGet Push (static)
+        working-directory: build/vc16/glew_static/
+        run: >-
+          nuget push *.nupkg
+          -ApiKey ${{ secrets.GITHUB_TOKEN }}
+          -Source GitHub
+          -NonInteractive
