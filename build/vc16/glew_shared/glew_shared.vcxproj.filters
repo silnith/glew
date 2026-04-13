@@ -40,5 +40,6 @@
     <None Include="..\..\..\nuget\README.md">
       <Filter>NuGet</Filter>
     </None>
+    <None Include="packages.config" />
   </ItemGroup>
 </Project>
