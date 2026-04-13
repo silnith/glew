@@ -269,7 +269,7 @@ jobs:
         shell: bash
         working-directory: build/vc16
         run: |
-          sed --in-place 's/\$version\$/${{ steps.get-version.outputs.GLEW_MAJOR }}.${{ steps.get-version.outputs.GLEW_MINOR }}.${{ steps.get-version.outputs.GLEW_MICRO }}/g' glew_shared/glew.dynamic.nuspec glew_static/glew.static.nuspec
+          sed --in-place 's/\$version\$/${{ steps.get-version.outputs.GLEW_MAJOR }}.${{ steps.get-version.outputs.GLEW_MINOR }}.${{ steps.get-version.outputs.GLEW_MICRO }}/g' glew_shared/glew.shared.nuspec glew_static/glew.static.nuspec
       - name: NuGet Pack (DLL)
         working-directory: build/vc16/glew_shared/
         run: >-
