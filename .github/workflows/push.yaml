@@ -271,9 +271,9 @@ jobs:
         run: |
           sed --in-place 's/\$version\$/${{ steps.get-version.outputs.GLEW_MAJOR }}.${{ steps.get-version.outputs.GLEW_MINOR }}.${{ steps.get-version.outputs.GLEW_MICRO }}/g' glew_shared/glew.shared.nuspec glew_static/glew.static.nuspec
       - name: NuGet Pack (DLL)
-        working-directory: build/vc16/glew_shared/
         run: >-
-          nuget pack glew.shared.nuspec
+          nuget pack build/vc16/glew_shared/glew.shared.nuspec
+          -BasePath build/vc16/glew_shared/
           -NonInteractive
           -Verbosity detailed
       - name: NuGet Pack (static)
