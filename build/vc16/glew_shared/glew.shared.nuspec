@@ -6,7 +6,7 @@
         
         https://learn.microsoft.com/en-us/nuget/reference/nuspec#id
         -->
-		<id>glew.dynamic</id>
+		<id>glew.shared</id>
 		<version>$version$</version>
 		<description>The OpenGL Extension Wrangler Library</description>
         <!--
@@ -53,8 +53,8 @@
         They must be placed in the "build/native" directory inside of the NuGet package in order for
         MSBuild to be able to use them.
         -->
-		<file src="glew.dynamic.props" target="build/native/" />
-		<file src="glew.dynamic.targets" target="build/native/" />
+		<file src="glew.shared.props" target="build/native/" />
+		<file src="glew.shared.targets" target="build/native/" />
         <!--
         The "lib" directory only has special meaning for managed code, it is not necessary for native code.
         

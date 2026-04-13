@@ -273,15 +273,13 @@ jobs:
       - name: NuGet Pack (DLL)
         working-directory: build/vc16/glew_shared/
         run: >-
-          nuget pack glew.dynamic.nuspec
-          -BasePath .
+          nuget pack glew.shared.nuspec
           -NonInteractive
           -Verbosity detailed
       - name: NuGet Pack (static)
         working-directory: build/vc16/glew_static/
         run: >-
           nuget pack glew.static.nuspec
-          -BasePath .
           -NonInteractive
           -Verbosity detailed
       - name: Upload Packages

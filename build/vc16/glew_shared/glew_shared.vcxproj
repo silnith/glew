@@ -389,9 +389,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\nuget\README.md" />
-    <None Include="glew.dynamic.nuspec" />
-    <None Include="glew.dynamic.props" />
-    <None Include="glew.dynamic.targets" />
+    <None Include="glew.shared.nuspec" />
+    <None Include="glew.shared.props" />
+    <None Include="glew.shared.targets" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

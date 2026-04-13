@@ -75,8 +75,8 @@
         <file src="../ARM64/Release/glew32s.lib" target="lib/native/ARM64/" />
         <file src="../ARM64/Release/glew32s.pdb" target="lib/native/ARM64/" />
         <!-- C and C++ header files go into the "include" directory in the NuGet package by convention. -->
-		<file src="../../../include/" target="/" />
-        <file src="../../../doc/" target="/" />
+		<file src="../../../include" target="/" />
+        <file src="../../../doc" target="/" />
         <file src="../nuget/README.md" target="doc/" />
 	</files>
 </package>
