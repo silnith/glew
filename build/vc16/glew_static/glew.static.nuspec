@@ -21,11 +21,11 @@
         
         https://learn.microsoft.com/en-us/nuget/reference/nuspec#license
         -->
-        <license type="file">LICENSE.txt</license>
+        <!--<license type="file">LICENSE.txt</license>-->
         <!-- Icons must be JPEG or PNG. Recommended size is 128x128. -->
-        <icon>doc/glew.png</icon>
+        <!--<icon>doc/glew.png</icon>-->
         <!-- A readme file must be in Markdown format, nothing else is supported. -->
-		<readme>doc/README.md</readme>
+        <!--<readme>doc/README.md</readme>-->
 		<requireLicenseAcceptance>false</requireLicenseAcceptance>
 		<developmentDependency>false</developmentDependency>
 		<copyright>
