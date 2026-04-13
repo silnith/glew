@@ -179,7 +179,7 @@ jobs:
         with:
           name: msbuild-${{ matrix.platform }}-${{ matrix.configuration }}
           path: |
-            bin/
+            build/vc16/${{ matrix.platform }}/${{ matrix.configuration }}/
   msbuild-build-arm:
     name: MSBuild Build ARM
     needs:
