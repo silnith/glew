@@ -224,11 +224,10 @@ jobs:
         with:
           name: msbuild-${{ matrix.platform }}-${{ matrix.configuration }}
           path: |
-            bin/
+            build/vc16/${{ matrix.platform }}/${{ matrix.configuration }}/
   nuget-package:
     name: NuGet
     needs:
-      - makefile-build
       - msbuild-build-intel
       - msbuild-build-arm
     runs-on: windows-latest
@@ -242,13 +241,23 @@ jobs:
       - name: Download Binaries (x86)
         uses: actions/download-artifact@v8
         with:
-          name: binaries-linux-mingw32
-          path: x86
+          name: msbuild-x86-Release
+          path: build/vc16/x86/Release/
       - name: Download Binaries (x64)
         uses: actions/download-artifact@v8
         with:
-          name: binaries-linux-mingw64
-          path: x64
+          name: msbuild-x64-Release
+          path: build/vc16/x64/Release/
+      - name: Download Binaries (ARM)
+        uses: actions/download-artifact@v8
+        with:
+          name: msbuild-ARM-Release
+          path: build/vc16/ARM/Release/
+      - name: Download Binaries (ARM64)
+        uses: actions/download-artifact@v8
+        with:
+          name: msbuild-ARM64-Release
+          path: build/vc16/ARM64/Release/
       - id: get-version
         name: Get Version
         shell: bash
@@ -257,25 +266,17 @@ jobs:
         shell: bash
         run: |
           sed --in-place 's/\$version\$/${{ steps.get-version.outputs.GLEW_MAJOR }}.${{ steps.get-version.outputs.GLEW_MINOR }}.${{ steps.get-version.outputs.GLEW_MICRO }}/g' nuget/glew.dynamic.nuspec nuget/glew.static.nuspec
-      - name: Rename
-        shell: bash
-        run: |
-          mv x86/lib/libglew32.dll.a x86/lib/glew32.lib
-          mv x64/lib/libglew32.dll.a x64/lib/glew32.lib
       - name: NuGet Pack (DLL)
+        working-directory: build/vc16
         run: >-
-          nuget pack nuget/glew.dynamic.nuspec
+          nuget pack glew.dynamic.nuspec
           -BasePath .
           -NonInteractive
           -Verbosity detailed
-      - name: Rename
-        shell: bash
-        run: |
-          mv x86/lib/libglew32.a x86/lib/glew32.lib
-          mv x64/lib/libglew32.a x64/lib/glew32.lib
       - name: NuGet Pack (static)
+        working-directory: build/vc16
         run: >-
-          nuget pack nuget/glew.static.nuspec
+          nuget pack glew.static.nuspec
           -BasePath .
           -NonInteractive
           -Verbosity detailed

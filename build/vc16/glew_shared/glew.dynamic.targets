@@ -8,5 +8,9 @@
             <Link>glew32.dll</Link>
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
+        <None Include="$(MSBuildThisFileDirectory)..\..\lib\native\$(PlatformTarget)\glew32.pdb">
+            <Link>glew32.pdb</Link>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
     </ItemGroup>
 </Project>

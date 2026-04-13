@@ -28,18 +28,18 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\..\nuget\glew.dynamic.nuspec">
-      <Filter>NuGet</Filter>
-    </None>
-    <None Include="..\..\..\nuget\glew.dynamic.props">
-      <Filter>NuGet</Filter>
-    </None>
-    <None Include="..\..\..\nuget\glew.dynamic.targets">
-      <Filter>NuGet</Filter>
-    </None>
-    <None Include="..\..\..\nuget\README.md">
-      <Filter>NuGet</Filter>
-    </None>
     <None Include="packages.config" />
+    <None Include="glew.dynamic.nuspec">
+      <Filter>NuGet</Filter>
+    </None>
+    <None Include="glew.dynamic.props">
+      <Filter>NuGet</Filter>
+    </None>
+    <None Include="glew.dynamic.targets">
+      <Filter>NuGet</Filter>
+    </None>
+    <None Include="..\nuget\README.md">
+      <Filter>NuGet</Filter>
+    </None>
   </ItemGroup>
 </Project>

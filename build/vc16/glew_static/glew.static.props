@@ -18,7 +18,7 @@
 			<AdditionalLibraryDirectories>$(MSBuildThisFileDirectory)..\..\lib\native\$(PlatformTarget);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
 		</Link>
 		<Link>
-			<AdditionalDependencies>glew32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+			<AdditionalDependencies>glew32s.lib;%(AdditionalDependencies)</AdditionalDependencies>
 		</Link>
 	</ItemDefinitionGroup>
 </Project>
