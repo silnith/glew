@@ -258,6 +258,9 @@ jobs:
         with:
           name: msbuild-ARM64-Release
           path: build/vc16/ARM64/Release/
+      - name: Show Files
+        shell: bash
+        run: find .
       - id: get-version
         name: Get Version
         shell: bash
