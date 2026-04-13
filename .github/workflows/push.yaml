@@ -273,7 +273,7 @@ jobs:
       - name: NuGet Pack (DLL)
         run: >-
           nuget pack build/vc16/glew_shared/glew.shared.nuspec
-          -BasePath build/vc16/glew_shared/
+          -BasePath build/vc16/
           -NonInteractive
           -Verbosity detailed
       - name: NuGet Pack (static)

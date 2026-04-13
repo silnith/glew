@@ -47,14 +47,14 @@
 	</metadata>
 	<files>
         <!-- The license file must be placed in the same spot declared in the license metadata element above. -->
-        <file src="../../../LICENSE.txt" target="/" />
+        <file src="../../LICENSE.txt" target="/" />
         <!--
         The targets and props files must be named for the NuGet package ID, just like this file.
         They must be placed in the "build/native" directory inside of the NuGet package in order for
         MSBuild to be able to use them.
         -->
-		<file src="glew.shared.props" target="build/native/" />
-		<file src="glew.shared.targets" target="build/native/" />
+		<file src="glew_shared/glew.shared.props" target="build/native/" />
+		<file src="glew_shared/glew.shared.targets" target="build/native/" />
         <!--
         The "lib" directory only has special meaning for managed code, it is not necessary for native code.
         
@@ -68,21 +68,21 @@
         
         https://learn.microsoft.com/en-us/nuget/reference/nuspec#file-element-attributes
         -->
-        <file src="../x86/Release/glew32.dll" target="lib/native/x86/" />
-        <file src="../x86/Release/glew32.lib" target="lib/native/x86/" />
-        <file src="../x86/Release/glew32.pdb" target="lib/native/x86/" />
-        <file src="../x64/Release/glew32.dll" target="lib/native/x64/" />
-        <file src="../x64/Release/glew32.lib" target="lib/native/x64/" />
-        <file src="../x64/Release/glew32.pdb" target="lib/native/x64/" />
-        <file src="../ARM/Release/glew32.dll" target="lib/native/ARM/" />
-        <file src="../ARM/Release/glew32.lib" target="lib/native/ARM/" />
-        <file src="../ARM/Release/glew32.pdb" target="lib/native/ARM/" />
-        <file src="../ARM64/Release/glew32.dll" target="lib/native/ARM64/" />
-        <file src="../ARM64/Release/glew32.lib" target="lib/native/ARM64/" />
-        <file src="../ARM64/Release/glew32.pdb" target="lib/native/ARM64/" />
+        <file src="x86/Release/glew32.dll" target="lib/native/x86/" />
+        <file src="x86/Release/glew32.lib" target="lib/native/x86/" />
+        <file src="x86/Release/glew32.pdb" target="lib/native/x86/" />
+        <file src="x64/Release/glew32.dll" target="lib/native/x64/" />
+        <file src="x64/Release/glew32.lib" target="lib/native/x64/" />
+        <file src="x64/Release/glew32.pdb" target="lib/native/x64/" />
+        <file src="ARM/Release/glew32.dll" target="lib/native/ARM/" />
+        <file src="ARM/Release/glew32.lib" target="lib/native/ARM/" />
+        <file src="ARM/Release/glew32.pdb" target="lib/native/ARM/" />
+        <file src="ARM64/Release/glew32.dll" target="lib/native/ARM64/" />
+        <file src="ARM64/Release/glew32.lib" target="lib/native/ARM64/" />
+        <file src="ARM64/Release/glew32.pdb" target="lib/native/ARM64/" />
         <!-- C and C++ header files go into the "include" directory in the NuGet package by convention. -->
-		<file src="../../../include/" target="/" />
-        <file src="../../../doc/" target="/" />
-        <file src="../nuget/README.md" target="doc/" />
+		<file src="../../include/" target="/" />
+        <file src="../../doc/" target="/" />
+        <file src="nuget/README.md" target="doc/" />
 	</files>
 </package>
