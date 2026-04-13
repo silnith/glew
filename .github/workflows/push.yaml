@@ -139,7 +139,7 @@ jobs:
     name: MSBuild Intel
     needs:
       - generate-source
-    runs-on: windows-2022
+    runs-on: windows-latest
     strategy:
       matrix:
         platform:
