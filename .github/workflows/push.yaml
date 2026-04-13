@@ -139,7 +139,7 @@ jobs:
     name: MSBuild Build
     needs:
       - generate-source
-    runs-on: windows-latest
+    runs-on: windows-2022
     strategy:
       matrix:
         platform:
