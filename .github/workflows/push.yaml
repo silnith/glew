@@ -179,8 +179,7 @@ jobs:
         with:
           name: msbuild-${{ matrix.platform }}-${{ matrix.configuration }}
           path: |
-            **/Debug/
-            **/Release/
+            bin/
   nuget-package:
     name: NuGet
     needs:
