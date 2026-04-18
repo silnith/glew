@@ -1,0 +1,308 @@
+# yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
+
+name: On Push
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  generate-source:
+    name: Generate Source Code
+    runs-on: ubuntu-latest
+    steps:
+      - name: Git Checkout
+        uses: actions/checkout@v6
+      - name: Clobber
+        run: make -C auto clobber
+      - name: Generate Extensions
+        run: make -C auto
+      - name: Upload Generated Source Code
+        uses: actions/upload-artifact@v7
+        with:
+          name: generated-source
+          path: |
+            include/GL
+            src
+            doc
+            build
+      # Look into this:
+      # https://github.com/marketplace/actions/cache-apt-packages
+      - name: Update
+        run: sudo apt-get update
+      - name: Install Dependencies
+        run: sudo apt-get install -y dos2unix
+      - name: Generate Distributable Source
+        run: make dist-src
+      - name: Upload Distributable Source
+        uses: actions/upload-artifact@v7
+        with:
+          name: distributable-source-archives
+          path: |
+            glew-*.zip
+            glew-*.tgz
+  makefile-build:
+    name: Make
+    needs:
+      - generate-source
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        system:
+          - linux
+          - linux-egl
+          - linux-clang
+          - linux-clang-egl
+          - linux-mingw32
+          - linux-mingw64
+    steps:
+      - name: Git Checkout
+        uses: actions/checkout@v6
+      - name: Download Generated Source Code
+        uses: actions/download-artifact@v8
+        with:
+          name: generated-source
+      - name: Update
+        run: sudo apt-get update
+      - name: Install Dependencies
+        run: sudo apt-get install -y clang mingw-w64 libxmu-dev libxi-dev libgl-dev libegl1-mesa-dev dos2unix
+      - name: Clean
+        run: make clean
+      - name: Make
+        env:
+          SYSTEM: ${{ matrix.system }}
+        run: make
+      - name: Upload Binaries
+        uses: actions/upload-artifact@v7
+        with:
+          name: make-${{ matrix.system }}
+          path: |
+            bin/
+            lib/
+  cmake-build:
+    name: CMake
+    needs:
+      - generate-source
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        build-type:
+          - Debug
+          - Release
+        shared-lib:
+          - false
+          - true
+        egl:
+          - false
+          - true
+    steps:
+      - name: Git Checkout
+        uses: actions/checkout@v6
+      - name: Download Generated Source Code
+        uses: actions/download-artifact@v8
+        with:
+          name: generated-source
+      - name: Update
+        run: sudo apt-get update
+      - name: Install Dependencies
+        run: sudo apt-get install -y cmake ninja-build libxmu-dev libxi-dev libgl-dev libegl1-mesa-dev dos2unix
+      # Look into this:
+      # https://github.com/threeal/cmake-action
+      # https://github.com/threeal/ctest-action
+      - name: Make Build Directory
+        run: mkdir build_
+      - name: CMake
+        run: >-
+          cmake build/cmake
+          -B build_
+          -G Ninja
+          --fresh
+          -DCMAKE_BUILD_TYPE=${{ matrix.build-type }}
+          -DGLEW_X11=${{ case(matrix.egl, 'N', 'Y') }}
+          -DGLEW_EGL=${{ case(matrix.egl, 'Y', 'N') }}
+          -DBUILD_SHARED_LIBS=${{ case(matrix.shared-lib, 'Y', 'N') }}
+      - name: CMake Build
+        run: cmake --build build_
+      - name: Make Install Directory
+        run: mkdir install
+      - name: CMake Install
+        run: cmake --install build_ --prefix install
+      - name: Upload Binaries
+        uses: actions/upload-artifact@v7
+        with:
+          name: cmake-${{ matrix.build-type }}-${{ case(matrix.egl, 'egl', 'x11') }}-${{ case(matrix.shared-lib, 'shared', 'static') }}
+          path: install/*
+  msbuild-build-intel:
+    name: MSBuild Intel
+    needs:
+      - generate-source
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        platform:
+          - x86
+          - x64
+        configuration:
+          - Debug
+          - Release
+    steps:
+      - name: Git Checkout
+        uses: actions/checkout@v6
+      - name: Download Generated Source Code
+        uses: actions/download-artifact@v8
+        with:
+          name: generated-source
+      - name: Setup MSBuild
+        uses: microsoft/setup-msbuild@v3
+      - name: Configure GitHub Packages
+        run: >-
+          nuget sources add
+          -Name GitHub
+          -UserName ${{ github.actor }}
+          -Password ${{ secrets.GITHUB_TOKEN }}
+          -Source https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json
+          -NonInteractive
+      - name: NuGet Restore
+        working-directory: build/vc16
+        run: nuget restore glew.sln -NonInteractive
+      - name: Build
+        working-directory: build/vc16
+        run: >-
+          msbuild glew.sln
+          -property:Platform=${{ matrix.platform }}
+          -property:Configuration=${{ matrix.configuration }}
+      - name: Upload Build Artifacts
+        uses: actions/upload-artifact@v7
+        with:
+          name: msbuild-${{ matrix.platform }}-${{ matrix.configuration }}
+          path: |
+            build/vc16/${{ matrix.platform }}/${{ matrix.configuration }}/
+  msbuild-build-arm:
+    name: MSBuild ARM
+    needs:
+      - generate-source
+    runs-on: windows-11-arm
+    strategy:
+      matrix:
+        platform:
+          - ARM
+          - ARM64
+        configuration:
+          - Debug
+          - Release
+    steps:
+      - name: Git Checkout
+        uses: actions/checkout@v6
+      - name: Download Generated Source Code
+        uses: actions/download-artifact@v8
+        with:
+          name: generated-source
+      - name: Setup MSBuild
+        uses: microsoft/setup-msbuild@v3
+      - name: Configure GitHub Packages
+        run: >-
+          nuget sources add
+          -Name GitHub
+          -UserName ${{ github.actor }}
+          -Password ${{ secrets.GITHUB_TOKEN }}
+          -Source https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json
+          -NonInteractive
+      - name: NuGet Restore
+        working-directory: build/vc16
+        run: nuget restore glew.sln -NonInteractive
+      - name: Build
+        working-directory: build/vc16
+        run: >-
+          msbuild glew.sln
+          -property:Platform=${{ matrix.platform }}
+          -property:Configuration=${{ matrix.configuration }}
+      - name: Upload Build Artifacts
+        uses: actions/upload-artifact@v7
+        with:
+          name: msbuild-${{ matrix.platform }}-${{ matrix.configuration }}
+          path: |
+            build/vc16/${{ matrix.platform }}/${{ matrix.configuration }}/
+  nuget-package:
+    name: NuGet
+    needs:
+      - msbuild-build-intel
+      - msbuild-build-arm
+    runs-on: windows-latest
+    steps:
+      - name: Git Checkout
+        uses: actions/checkout@v6
+      - name: Download Generated Source Code
+        uses: actions/download-artifact@v8
+        with:
+          name: generated-source
+      - name: Download Binaries (x86)
+        uses: actions/download-artifact@v8
+        with:
+          name: msbuild-x86-Release
+          path: build/vc16/x86/Release/
+      - name: Download Binaries (x64)
+        uses: actions/download-artifact@v8
+        with:
+          name: msbuild-x64-Release
+          path: build/vc16/x64/Release/
+      - name: Download Binaries (ARM)
+        uses: actions/download-artifact@v8
+        with:
+          name: msbuild-ARM-Release
+          path: build/vc16/ARM/Release/
+      - name: Download Binaries (ARM64)
+        uses: actions/download-artifact@v8
+        with:
+          name: msbuild-ARM64-Release
+          path: build/vc16/ARM64/Release/
+      - name: Configure GitHub Packages
+        run: >-
+          nuget sources add
+          -Name GitHub
+          -UserName ${{ github.actor }}
+          -Password ${{ secrets.GITHUB_TOKEN }}
+          -Source https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json
+          -NonInteractive
+      - id: get-version
+        name: Get Version
+        shell: bash
+        run: cat config/version | sed 's/ //g;s/(/{/g;s/)/}/g' >> "$GITHUB_OUTPUT"
+      - name: Set Version
+        shell: bash
+        working-directory: build/vc16
+        run: |
+          sed --in-place 's/\$version\$/${{ steps.get-version.outputs.GLEW_MAJOR }}.${{ steps.get-version.outputs.GLEW_MINOR }}.${{ steps.get-version.outputs.GLEW_MICRO }}/g' glew_shared/glew.shared.nuspec glew_static/glew.static.nuspec
+      - name: NuGet Pack (DLL)
+        working-directory: build/vc16/glew_shared/
+        run: >-
+          nuget pack glew.shared.nuspec
+          -NonInteractive
+          -Verbosity detailed
+      - name: NuGet Pack (static)
+        working-directory: build/vc16/glew_static/
+        run: >-
+          nuget pack glew.static.nuspec
+          -NonInteractive
+          -Verbosity detailed
+      - name: Upload Packages
+        uses: actions/upload-artifact@v7
+        with:
+          name: nuget
+          path: 'build/vc16/**/*.nupkg'
+      - name: NuGet Push (DLL)
+        working-directory: build/vc16/glew_shared/
+        run: >-
+          nuget push *.nupkg
+          -ApiKey ${{ secrets.GITHUB_TOKEN }}
+          -Source GitHub
+          -NonInteractive
+      - name: NuGet Push (static)
+        working-directory: build/vc16/glew_static/
+        run: >-
+          nuget push *.nupkg
+          -ApiKey ${{ secrets.GITHUB_TOKEN }}
+          -Source GitHub
+          -NonInteractive
